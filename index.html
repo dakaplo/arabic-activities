@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arabic Language Activities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #F2EDE4;
+    --surface:  #FFFFFF;
+    --ink:      #1B2A4A;
+    --gold:     #B8922A;
+    --muted:    #8A97A8;
+    --rule:     #D8D2C8;
+    --radius:   6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--ink);
+    padding: 48px 40px 40px;
+  }
+
+  .hero-arabic {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    color: var(--bg);
+    line-height: 1;
+    display: block;
+    direction: rtl;
+    opacity: 0.92;
+  }
+
+  .hero-en {
+    margin-top: 14px;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+    max-width: 52ch;
+    line-height: 1.5;
+  }
+
+  .hero-en strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── Main content ── */
+  main {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  /* ── Filter row ── */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 36px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 1.5px solid var(--rule);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #FFF;
+  }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--gold);
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.12s ease;
+  }
+
+  .card:hover { transform: translateY(-2px); }
+
+  .card-tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: lowercase;
+    color: var(--gold);
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+
+  .card-title-ar {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.1rem;
+    direction: rtl;
+    display: block;
+    margin-top: 2px;
+    color: var(--ink);
+    opacity: 0.7;
+  }
+
+  .card-desc {
+    font-size: 0.84rem;
+    color: #4A5568;
+    line-height: 1.55;
+    font-weight: 400;
+    flex: 1;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .card-level {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .card-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--gold);
+    padding-bottom: 1px;
+    transition: color 0.12s, border-color 0.12s;
+  }
+
+  .card-link:hover {
+    color: var(--gold);
+  }
+
+  /* ── Hidden card ── */
+  .card[hidden] { display: none; }
+
+  /* ── Empty state ── */
+  .empty-msg {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 0.9rem;
+    padding: 12px 0;
+  }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 24px 40px;
+    max-width: 1020px;
+    margin: 0 auto;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .topbar, main, footer { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="hero-arabic">أَنْشِطَة</span>
+  <p class="hero-en">Interactive Arabic language activities for the classroom.<br>
+  Designed for <strong>instructors</strong> teaching Modern Standard Arabic.</p>
+</div>
+
+<main>
+  <div class="filter-row">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="morphology">Morphology</button>
+    <button class="filter-btn" data-filter="vocabulary">Vocabulary</button>
+    <button class="filter-btn" data-filter="grammar">Grammar</button>
+    <button class="filter-btn" data-filter="reading">Reading</button>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <div class="card" data-tags="morphology vocabulary">
+      <div class="card-tag">morphology</div>
+      <div class="card-title">
+        Root &amp; Pattern Sort
+        <span class="card-title-ar">رَتِّب حَسَب الوَزْن</span>
+      </div>
+      <p class="card-desc">Drag 20 familiar words into four groups by wazn: فَعَلَ، فَاعِل، فِعَالَة، فَعْل. Builds awareness of how roots and patterns generate related vocabulary.</p>
+      <div class="card-meta">
+        <span class="card-level">Year 1+</span>
+        <a class="card-link" href="arabic-wazn-sort.html">Open activity</a>
+      </div>
+    </div>
+
+    <!-- Placeholder cards — replace href and content as you add activities -->
+
+    <div class="card" data-tags="grammar">
+      <div class="card-tag">grammar</div>
+      <div class="card-title">
+        Coming soon
+        <span class="card-title-ar"></span>
+      </div>
+      <p class="card-desc">New activities will appear here as they are added.</p>
+      <div class="card-meta">
+        <span class="card-level"></span>
+        <span class="card-link" style="opacity:.35; cursor:default; border-color:var(--rule);">Coming soon</span>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Arabic Language Activities &mdash; Department of Middle Eastern Studies, University of Chicago
+</footer>
+
+<script>
+  const btns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      cards.forEach(card => {
+        if (f === 'all' || card.dataset.tags.includes(f)) {
+          card.removeAttribute('hidden');
+        } else {
+          card.setAttribute('hidden', '');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
