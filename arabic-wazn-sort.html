@@ -394,14 +394,18 @@ bank.addEventListener('drop', e => {
 
 // ── Touch drag (mobile) ───────────────────────────────────────────────────────
 let touchChip = null, clone = null, offsetX = 0, offsetY = 0;
+let touchStartX = 0, touchStartY = 0, touchMoved = false;
 
 document.addEventListener('touchstart', e => {
   const chip = e.target.closest('.chip');
   if (!chip) return;
   touchChip = chip;
+  touchMoved = false;
   chip.classList.add('dragging');
   const rect = chip.getBoundingClientRect();
   const t = e.touches[0];
+  touchStartX = t.clientX;
+  touchStartY = t.clientY;
   offsetX = t.clientX - rect.left;
   offsetY = t.clientY - rect.top;
   clone = chip.cloneNode(true);
@@ -417,6 +421,9 @@ document.addEventListener('touchmove', e => {
   if (!clone) return;
   e.preventDefault();
   const t = e.touches[0];
+  if (Math.abs(t.clientX - touchStartX) > 8 || Math.abs(t.clientY - touchStartY) > 8) {
+    touchMoved = true;
+  }
   clone.style.left = (t.clientX - offsetX) + 'px';
   clone.style.top  = (t.clientY - offsetY) + 'px';
   // highlight zone under finger
@@ -437,10 +444,16 @@ document.addEventListener('touchend', e => {
   const zone = el && el.closest('.zone');
   const bankEl = el && el.closest('#word-bank');
 
-  if (zone) {
+  if (!touchMoved) {
+    // Short tap — select/deselect the chip directly; suppress synthesized click
+    setSelected(touchChip);
+    e.preventDefault();
+  } else if (zone) {
     dropWordIntoZone(touchChip.dataset.id, zone.dataset.zone);
+    clearSelected();
   } else if (bankEl) {
     returnWordToBank(touchChip.dataset.id);
+    clearSelected();
   }
 
   clone.remove();
