@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arab League: Countries & Capitals</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0f4f0;
+    --surface: #ffffff;
+    --ink: #1a1f1a;
+    --mid: #4a5a4a;
+    --light: #8a9e8a;
+    --rule: #d4e0d4;
+    --accent: #2d5a2d;
+    --accent-light: #e8f0e8;
+    --correct: #1e6b3a;
+    --correct-bg: #d4eddf;
+    --wrong: #8b1a1a;
+    --wrong-bg: #f8e0e0;
+    --selected: #2d5a2d;
+    --selected-bg: #c8dcc8;
+    --matched: #f5f5f5;
+    --matched-text: #aaaaaa;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    max-width: 820px;
+    margin: 0 auto 2.5rem;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1.25rem;
+  }
+
+  header h1 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--mid);
+    margin-bottom: 0.35rem;
+  }
+
+  header .arabic-title {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--ink);
+    direction: rtl;
+    line-height: 1.3;
+  }
+
+  header .subtitle {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--light);
+  }
+
+  .score-bar {
+    max-width: 820px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--mid);
+  }
+
+  .score-bar .score-num {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--accent);
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .instructions {
+    max-width: 820px;
+    margin: 0 auto 1.75rem;
+    font-size: 0.875rem;
+    color: var(--mid);
+    line-height: 1.6;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+  }
+
+  .columns {
+    max-width: 820px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .col-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 0.6rem;
+    padding-left: 2px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    user-select: none;
+    min-height: 54px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .card:hover:not(.matched):not(.wrong-flash) {
+    border-color: var(--accent);
+    box-shadow: 0 1px 6px rgba(45,90,45,0.12);
+  }
+
+  .card.selected {
+    border-color: var(--selected);
+    background: var(--selected-bg);
+    box-shadow: 0 1px 8px rgba(45,90,45,0.18);
+  }
+
+  .card.matched {
+    border-color: var(--rule);
+    background: var(--matched);
+    cursor: default;
+    opacity: 0.55;
+  }
+
+  .card.matched .card-arabic,
+  .card.matched .card-trans,
+  .card.matched .card-en {
+    color: var(--matched-text);
+  }
+
+  .card.correct-flash {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+    animation: flashCorrect 0.5s ease;
+  }
+
+  .card.wrong-flash {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+    animation: flashWrong 0.5s ease;
+  }
+
+  @keyframes flashCorrect {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.025); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes flashWrong {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(3px); }
+    100% { transform: translateX(0); }
+  }
+
+  .card-arabic {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    direction: rtl;
+    text-align: right;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  .card-trans {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--mid);
+    margin-top: 1px;
+  }
+
+  .card-en {
+    font-size: 0.78rem;
+    color: var(--light);
+    margin-top: 0px;
+  }
+
+
+  .complete-banner {
+    display: none;
+    max-width: 820px;
+    margin: 2rem auto 0;
+    background: var(--correct-bg);
+    border: 1.5px solid var(--correct);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+  }
+
+  .complete-banner.show { display: block; }
+
+  .complete-banner p {
+    font-size: 1rem;
+    color: var(--correct);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  .complete-banner .arabic-congrats {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-size: 1.4rem;
+    direction: rtl;
+    color: var(--correct);
+  }
+
+  .reset-btn {
+    display: block;
+    margin: 1.5rem auto 0;
+    padding: 0.55rem 1.5rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+
+  .reset-btn:hover { background: #1e3d1e; }
+
+  footer {
+    max-width: 820px;
+    margin: 3rem auto 0;
+    font-size: 0.75rem;
+    color: var(--light);
+    border-top: 1px solid var(--rule);
+    padding-top: 0.75rem;
+  }
+
+  @media (max-width: 580px) {
+    .columns { grid-template-columns: 1fr; }
+    .card-arabic { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Arab League Member States</h1>
+  <div class="arabic-title">الدُّوَل الأَعضاء في جامِعَة الدُّوَل العَرَبِيَّة</div>
+  <div class="subtitle">Countries &amp; Capitals — Matching Activity</div>
+</header>
+
+<div class="score-bar">
+  <span>Matched: <span class="score-num" id="scoreNum">0</span> / 22</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="instructions">
+  Click a country, then click its capital to match them. Green = correct; red = try again.
+</div>
+
+<div class="columns">
+  <div>
+    <div class="col-label">Countries / الدُّوَل</div>
+    <div id="countries-col"></div>
+  </div>
+  <div class="capitals-col">
+    <div class="col-label">Capitals / العَواصِم</div>
+    <div id="capitals-col"></div>
+  </div>
+</div>
+
+<div class="complete-banner" id="completeBanner">
+  <p>All matched! مَبروك!</p>
+  <div class="arabic-congrats">أَحسَنتَ! عَرَفتَ جَميع العَواصِم.</div>
+  <button class="reset-btn" onclick="initGame()">Play again / مَرَّة ثانية</button>
+</div>
+
+<footer>
+  Data: Arab League member states as of 2024. Syria's membership was suspended 2011–2023; it was reinstated in 2023. Palestine uses القُدس / al-Quds (Jerusalem) per Arab League convention. This game was coded by Claude.
+</footer>
+
+<script>
+const DATA = [
+  { country_ar: "الجَزائِر",     country_tr: "al-jazaa'ir",       country_en: "Algeria",      cap_ar: "الجَزائِر",       cap_tr: "al-jazaa'ir",        cap_en: "Algiers" },
+  { country_ar: "البَحرَين",     country_tr: "al-baHrayn",        country_en: "Bahrain",      cap_ar: "المَنامة",        cap_tr: "al-manaama",         cap_en: "Manama" },
+  { country_ar: "جِيبوتي",       country_tr: "jiibuutii",          country_en: "Djibouti",     cap_ar: "جِيبوتي",         cap_tr: "jiibuutii",           cap_en: "Djibouti" },
+  { country_ar: "مِصر",          country_tr: "miSr",              country_en: "Egypt",        cap_ar: "القاهِرة",        cap_tr: "al-qaahira",         cap_en: "Cairo" },
+  { country_ar: "العِراق",       country_tr: "al-ʿiraaq",         country_en: "Iraq",         cap_ar: "بَغداد",          cap_tr: "baghdaad",           cap_en: "Baghdad" },
+  { country_ar: "الأُردُن",      country_tr: "al-urdun",          country_en: "Jordan",       cap_ar: "عَمّان",          cap_tr: "ʿammaan",            cap_en: "Amman" },
+  { country_ar: "جُزُر القَمَر", country_tr: "juzur al-qamar",    country_en: "Comoros",      cap_ar: "مورُوني",         cap_tr: "muuruunii",          cap_en: "Moroni" },
+  { country_ar: "الكُوَيت",      country_tr: "al-kuwayt",         country_en: "Kuwait",       cap_ar: "الكُوَيت",        cap_tr: "al-kuwayt",          cap_en: "Kuwait City" },
+  { country_ar: "لُبنان",        country_tr: "lubnaan",           country_en: "Lebanon",      cap_ar: "بَيروت",          cap_tr: "bayruut",            cap_en: "Beirut" },
+  { country_ar: "لِيبيا",        country_tr: "liibyaa",           country_en: "Libya",        cap_ar: "طَرابُلُس",       cap_tr: "Taraabulus",         cap_en: "Tripoli" },
+  { country_ar: "مُوريتانيا",    country_tr: "muriitaanyaa",      country_en: "Mauritania",   cap_ar: "نُواكشوط",        cap_tr: "nuwaakshuuT",       cap_en: "Nouakchott" },
+  { country_ar: "المَغرِب",      country_tr: "al-maghrib",        country_en: "Morocco",      cap_ar: "الرِّباط",        cap_tr: "al-ribaaT",          cap_en: "Rabat" },
+  { country_ar: "عُمان",         country_tr: "ʿumaan",            country_en: "Oman",         cap_ar: "مَسقَط",          cap_tr: "masqaT",             cap_en: "Muscat" },
+  { country_ar: "فِلَسطين",      country_tr: "filasTiin",         country_en: "Palestine",    cap_ar: "القُدس",          cap_tr: "al-quds",            cap_en: "Jerusalem" },
+  { country_ar: "قَطَر",         country_tr: "qaTar",             country_en: "Qatar",        cap_ar: "الدَّوحة",        cap_tr: "al-dawHa",           cap_en: "Doha" },
+  { country_ar: "السُّعودِيَّة", country_tr: "al-suʿuudiyya",     country_en: "Saudi Arabia", cap_ar: "الرِّياض",        cap_tr: "al-riyaaD",          cap_en: "Riyadh" },
+  { country_ar: "الصُّومال",     country_tr: "al-Suumaal",        country_en: "Somalia",      cap_ar: "مَقديشو",         cap_tr: "maqdiishuu",         cap_en: "Mogadishu" },
+  { country_ar: "السُّودان",     country_tr: "al-suudaan",        country_en: "Sudan",        cap_ar: "الخَرطوم",        cap_tr: "al-kharTuum",        cap_en: "Khartoum" },
+  { country_ar: "سُوريا",        country_tr: "suuriyaa",          country_en: "Syria",        cap_ar: "دِمَشق",          cap_tr: "dimashq",            cap_en: "Damascus" },
+  { country_ar: "تونِس",         country_tr: "tuunis",            country_en: "Tunisia",      cap_ar: "تونِس",           cap_tr: "tuunis",             cap_en: "Tunis" },
+  { country_ar: "الإِمارات",     country_tr: "al-imaaraat",       country_en: "UAE",          cap_ar: "أبو ظَبي",        cap_tr: "abuu DHabii",        cap_en: "Abu Dhabi" },
+  { country_ar: "اليَمَن",       country_tr: "al-yaman",          country_en: "Yemen",        cap_ar: "صَنعاء",          cap_tr: "Sanʿaa'",            cap_en: "Sana'a" },
+];
+
+let selectedCountry = null;
+let selectedCapital = null;
+let matched = new Set();
+let score = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function makeCard(html, id, type) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.dataset.id = id;
+  div.dataset.type = type;
+  div.innerHTML = html;
+  div.addEventListener('click', () => handleClick(div, id, type));
+  return div;
+}
+
+function initGame() {
+  selectedCountry = null;
+  selectedCapital = null;
+  matched = new Set();
+  score = 0;
+  document.getElementById('scoreNum').textContent = '0';
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('completeBanner').classList.remove('show');
+
+  const countriesCol = document.getElementById('countries-col');
+  const capitalsCol = document.getElementById('capitals-col');
+  countriesCol.innerHTML = '';
+  capitalsCol.innerHTML = '';
+
+  const shuffledCountries = shuffle(DATA);
+  const shuffledCapitals = shuffle(DATA);
+
+  shuffledCountries.forEach((item, i) => {
+    const html = `
+      <div class="card-arabic">${item.country_ar}</div>
+      <div class="card-trans">${item.country_tr}</div>
+      <div class="card-en">${item.country_en}</div>`;
+    countriesCol.appendChild(makeCard(html, item.country_en, 'country'));
+  });
+
+  shuffledCapitals.forEach((item) => {
+    const html = `
+      <div class="card-arabic">${item.cap_ar}</div>
+      <div class="card-trans">${item.cap_tr}</div>
+      <div class="card-en">${item.cap_en}</div>`;
+    capitalsCol.appendChild(makeCard(html, item.country_en, 'capital'));
+  });
+}
+
+function clearSelections() {
+  document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+  selectedCountry = null;
+  selectedCapital = null;
+}
+
+function flashCards(id, cls) {
+  const cards = document.querySelectorAll(`.card[data-id="${id}"]`);
+  cards.forEach(c => {
+    c.classList.add(cls);
+    setTimeout(() => c.classList.remove(cls), 600);
+  });
+}
+
+function markMatched(id) {
+  document.querySelectorAll(`.card[data-id="${id}"]`).forEach(c => {
+    c.classList.remove('selected');
+    c.classList.add('matched');
+  });
+}
+
+function handleClick(div, id, type) {
+  if (matched.has(id)) return;
+  if (div.classList.contains('wrong-flash')) return;
+
+  if (type === 'country') {
+    if (selectedCountry === id) { clearSelections(); return; }
+    document.querySelectorAll('.card[data-type="country"].selected').forEach(c => c.classList.remove('selected'));
+    div.classList.add('selected');
+    selectedCountry = id;
+  } else {
+    if (selectedCapital === id) { clearSelections(); return; }
+    document.querySelectorAll('.card[data-type="capital"].selected').forEach(c => c.classList.remove('selected'));
+    div.classList.add('selected');
+    selectedCapital = id;
+  }
+
+  if (selectedCountry && selectedCapital) {
+    if (selectedCountry === selectedCapital) {
+      // Correct
+      flashCards(selectedCountry, 'correct-flash');
+      setTimeout(() => {
+        markMatched(selectedCountry);
+        matched.add(selectedCountry);
+        score++;
+        document.getElementById('scoreNum').textContent = score;
+        document.getElementById('progressFill').style.width = (score / 22 * 100) + '%';
+        selectedCountry = null;
+        selectedCapital = null;
+        if (score === 22) {
+          setTimeout(() => document.getElementById('completeBanner').classList.add('show'), 400);
+        }
+      }, 550);
+    } else {
+      // Wrong
+      const wrongCountry = selectedCountry;
+      const wrongCapital = selectedCapital;
+      flashCards(wrongCountry, 'wrong-flash');
+      flashCards(wrongCapital, 'wrong-flash');
+      selectedCountry = null;
+      selectedCapital = null;
+      setTimeout(() => {
+        document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+      }, 650);
+    }
+  }
+}
+
+initGame();
+</script>
+</body>
+</html>
