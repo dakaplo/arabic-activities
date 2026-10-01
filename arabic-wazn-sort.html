@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arabic Root & Pattern Sorting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #F7F6F2;
+    --surface:  #FFFFFF;
+    --ink:      #1A1A18;
+    --muted:    #6B6B5E;
+    --rule:     #D9D8D0;
+
+    /* Zone accent colors — ink + tint pairs */
+    --z1-ink:   #1D3A6B;
+    --z1-tint:  #E4EAF6;
+    --z2-ink:   #3A6B1D;
+    --z2-tint:  #E4F0DC;
+    --z3-ink:   #6B3A1D;
+    --z3-tint:  #F0E8DC;
+    --z4-ink:   #5C1D6B;
+    --z4-tint:  #EDE0F4;
+
+    --radius:   10px;
+    --chip-r:   8px;
+    --gap:      16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .title-ar {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.4;
+    direction: rtl;
+  }
+
+  .subtitle {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    direction: ltr;
+    font-weight: 400;
+  }
+
+  /* ── Word bank ── */
+  #word-bank-section {
+    max-width: 700px;
+    margin: 0 auto 32px;
+  }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    direction: ltr;
+  }
+
+  #word-bank {
+    background: var(--surface);
+    border: 1.5px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 72px;
+  }
+
+  /* ── Chips ── */
+  .chip {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: var(--chip-r);
+    background: var(--ink);
+    color: #FFF;
+    cursor: grab;
+    user-select: none;
+    border: 2px solid transparent;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    direction: rtl;
+    touch-action: none;
+  }
+
+  .chip:hover  { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.18); }
+  .chip:active { cursor: grabbing; opacity: .85; }
+  .chip.dragging { opacity: .4; transform: scale(1.05); }
+
+  .chip.placed {
+    cursor: default;
+    background: var(--zone-ink, var(--ink));
+    border-color: transparent;
+  }
+  .chip.placed:hover { transform: none; box-shadow: none; }
+
+  /* ── Drop zones grid ── */
+  #zones-grid {
+    max-width: 700px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  @media (max-width: 500px) {
+    #zones-grid { grid-template-columns: 1fr; }
+  }
+
+  .zone {
+    background: var(--surface);
+    border: 2px dashed var(--rule);
+    border-radius: var(--radius);
+    padding: 16px;
+    min-height: 160px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .zone.over {
+    border-color: var(--zone-ink);
+    background: var(--zone-tint);
+  }
+
+  .zone[data-zone="1"] { --zone-ink: var(--z1-ink); --zone-tint: var(--z1-tint); }
+  .zone[data-zone="2"] { --zone-ink: var(--z2-ink); --zone-tint: var(--z2-tint); }
+  .zone[data-zone="3"] { --zone-ink: var(--z3-ink); --zone-tint: var(--z3-tint); }
+  .zone[data-zone="4"] { --zone-ink: var(--z4-ink); --zone-tint: var(--z4-tint); }
+
+  .zone-header {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--rule);
+    direction: rtl;
+  }
+
+  .wazn-label {
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--zone-ink);
+    display: block;
+    line-height: 1.3;
+  }
+
+  .wazn-name-en {
+    font-size: 0.76rem;
+    color: var(--muted);
+    display: block;
+    direction: ltr;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .zone-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    max-width: 700px;
+    margin: 24px auto 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  button {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  button:hover  { opacity: .85; }
+  button:active { transform: scale(.97); }
+
+  #btn-check {
+    background: var(--ink);
+    color: #FFF;
+  }
+
+  #btn-reset {
+    background: transparent;
+    border: 1.5px solid var(--rule);
+    color: var(--muted);
+  }
+
+  /* ── Feedback ── */
+  #feedback {
+    max-width: 700px;
+    margin: 18px auto 0;
+    text-align: center;
+    font-size: 0.9rem;
+    min-height: 26px;
+    font-weight: 500;
+    direction: ltr;
+  }
+
+  .chip.correct { outline: 3px solid #3A6B1D; }
+  .chip.wrong   { outline: 3px solid #A32020; animation: shake .3s ease; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25%      { transform: translateX(-5px); }
+    75%      { transform: translateX(5px); }
+  }
+
+  .msg-success { color: #3A6B1D; }
+  .msg-error   { color: #A32020; }
+  .msg-partial { color: #7A5500; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-ar">رَتِّب الكَلِمَات حَسَب الوَزْن</div>
+  <div class="subtitle">Drag each word into the column that matches its pattern (wazn)</div>
+</header>
+
+<section id="word-bank-section">
+  <div class="section-label">Word bank — drag from here</div>
+  <div id="word-bank"></div>
+</section>
+
+<div id="zones-grid">
+  <div class="zone" data-zone="1">
+    <div class="zone-header">
+      <span class="wazn-label">فَعَلَ</span>
+      <span class="wazn-name-en">faʿala — past-tense verb</span>
+    </div>
+    <div class="zone-chips" id="zone-1"></div>
+  </div>
+  <div class="zone" data-zone="2">
+    <div class="zone-header">
+      <span class="wazn-label">فَاعِل</span>
+      <span class="wazn-name-en">fāʿil — active participle</span>
+    </div>
+    <div class="zone-chips" id="zone-2"></div>
+  </div>
+  <div class="zone" data-zone="3">
+    <div class="zone-header">
+      <span class="wazn-label">فِعَالَة</span>
+      <span class="wazn-name-en">fiʿāla — verbal noun pattern</span>
+    </div>
+    <div class="zone-chips" id="zone-3"></div>
+  </div>
+  <div class="zone" data-zone="4">
+    <div class="zone-header">
+      <span class="wazn-label">فَعْل</span>
+      <span class="wazn-name-en">faʿl — basic noun pattern</span>
+    </div>
+    <div class="zone-chips" id="zone-4"></div>
+  </div>
+</div>
+
+<div class="controls">
+  <button id="btn-check">Check answers</button>
+  <button id="btn-reset">Reset</button>
+</div>
+
+<div id="feedback"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const WORDS = [
+  // zone 1: فَعَلَ
+  { id: "w1",  ar: "كَتَبَ",   zone: 1 },
+  { id: "w2",  ar: "سَكَنَ",   zone: 1 },
+  { id: "w3",  ar: "دَرَسَ",   zone: 1 },
+  { id: "w4",  ar: "قَرَأَ",   zone: 1 },
+  { id: "w17", ar: "سَبَحَ",   zone: 1 },
+  // zone 2: فَاعِل
+  { id: "w5",  ar: "كَاتِب",   zone: 2 },
+  { id: "w6",  ar: "سَاكِن",   zone: 2 },
+  { id: "w7",  ar: "طَالِب",   zone: 2 },
+  { id: "w8",  ar: "قَادِم",   zone: 2 },
+  { id: "w18", ar: "قَارِئ",   zone: 2 },
+  // zone 3: فِعَالَة
+  { id: "w9",  ar: "سِيَاحَة", zone: 3 },
+  { id: "w10", ar: "سِبَاحَة", zone: 3 },
+  { id: "w11", ar: "دِرَاسَة", zone: 3 },
+  { id: "w12", ar: "قِرَاءَة", zone: 3 },
+  { id: "w19", ar: "كِتَابَة", zone: 3 },
+  // zone 4: فَعْل
+  { id: "w13", ar: "بَحْر",    zone: 4 },
+  { id: "w14", ar: "نَوْم",    zone: 4 },
+  { id: "w15", ar: "عَيْن",    zone: 4 },
+  { id: "w16", ar: "أَكْل",    zone: 4 },
+  { id: "w20", ar: "دَرْس",    zone: 4 },
+];
+
+// Track where each word currently lives: 'bank' | '1' | '2' | '3' | '4'
+const placement = {};
+WORDS.forEach(w => placement[w.id] = 'bank');
+
+// ── DOM helpers ───────────────────────────────────────────────────────────────
+const bank    = document.getElementById('word-bank');
+const feedback = document.getElementById('feedback');
+
+const ZONE_INK = {
+  1: getComputedStyle(document.documentElement).getPropertyValue('--z1-ink').trim(),
+  2: getComputedStyle(document.documentElement).getPropertyValue('--z2-ink').trim(),
+  3: getComputedStyle(document.documentElement).getPropertyValue('--z3-ink').trim(),
+  4: getComputedStyle(document.documentElement).getPropertyValue('--z4-ink').trim(),
+};
+
+// ── Build chips ───────────────────────────────────────────────────────────────
+function buildChip(word) {
+  const el = document.createElement('div');
+  el.className = 'chip';
+  el.id = `chip-${word.id}`;
+  el.textContent = word.ar;
+  el.draggable = true;
+  el.dataset.id = word.id;
+  return el;
+}
+
+// ── Drag & drop (desktop) ─────────────────────────────────────────────────────
+let dragged = null;
+
+document.addEventListener('dragstart', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  dragged = chip;
+  chip.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', chip.dataset.id);
+});
+
+document.addEventListener('dragend', e => {
+  const chip = e.target.closest('.chip');
+  if (chip) chip.classList.remove('dragging');
+  dragged = null;
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('over'));
+});
+
+document.querySelectorAll('.zone').forEach(zone => {
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    zone.classList.add('over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('over');
+    const id = e.dataTransfer.getData('text/plain');
+    dropWordIntoZone(id, zone.dataset.zone);
+  });
+});
+
+bank.addEventListener('dragover', e => { e.preventDefault(); });
+bank.addEventListener('drop', e => {
+  e.preventDefault();
+  const id = e.dataTransfer.getData('text/plain');
+  returnWordToBank(id);
+});
+
+// ── Touch drag (mobile) ───────────────────────────────────────────────────────
+let touchChip = null, clone = null, offsetX = 0, offsetY = 0;
+
+document.addEventListener('touchstart', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  touchChip = chip;
+  chip.classList.add('dragging');
+  const rect = chip.getBoundingClientRect();
+  const t = e.touches[0];
+  offsetX = t.clientX - rect.left;
+  offsetY = t.clientY - rect.top;
+  clone = chip.cloneNode(true);
+  clone.style.cssText = `
+    position:fixed; pointer-events:none; z-index:1000; opacity:.85;
+    left:${rect.left}px; top:${rect.top}px;
+    width:${rect.width}px; margin:0;
+  `;
+  document.body.appendChild(clone);
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (!clone) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  clone.style.left = (t.clientX - offsetX) + 'px';
+  clone.style.top  = (t.clientY - offsetY) + 'px';
+  // highlight zone under finger
+  clone.style.display = 'none';
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  clone.style.display = '';
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('over'));
+  const zone = el && el.closest('.zone');
+  if (zone) zone.classList.add('over');
+}, { passive: false });
+
+document.addEventListener('touchend', e => {
+  if (!touchChip || !clone) return;
+  const t = e.changedTouches[0];
+  clone.style.display = 'none';
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  clone.style.display = '';
+  const zone = el && el.closest('.zone');
+  const bankEl = el && el.closest('#word-bank');
+
+  if (zone) {
+    dropWordIntoZone(touchChip.dataset.id, zone.dataset.zone);
+  } else if (bankEl) {
+    returnWordToBank(touchChip.dataset.id);
+  }
+
+  clone.remove();
+  touchChip.classList.remove('dragging');
+  touchChip = null;
+  clone = null;
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('over'));
+});
+
+// ── Move logic ────────────────────────────────────────────────────────────────
+function dropWordIntoZone(id, zoneNum) {
+  const chip = document.getElementById(`chip-${id}`);
+  if (!chip) return;
+  clearFeedbackClasses(chip);
+  const zoneChips = document.getElementById(`zone-${zoneNum}`);
+  zoneChips.appendChild(chip);
+  placement[id] = zoneNum;
+  chip.classList.add('placed');
+  chip.style.setProperty('--zone-ink', ZONE_INK[zoneNum] || '');
+  feedback.textContent = '';
+}
+
+function returnWordToBank(id) {
+  const chip = document.getElementById(`chip-${id}`);
+  if (!chip) return;
+  clearFeedbackClasses(chip);
+  bank.appendChild(chip);
+  placement[id] = 'bank';
+  chip.classList.remove('placed');
+  chip.style.removeProperty('--zone-ink');
+  feedback.textContent = '';
+}
+
+function clearFeedbackClasses(chip) {
+  chip.classList.remove('correct', 'wrong');
+}
+
+// ── Check ─────────────────────────────────────────────────────────────────────
+document.getElementById('btn-check').addEventListener('click', () => {
+  let correct = 0, wrong = 0, unplaced = 0;
+
+  WORDS.forEach(w => {
+    const chip = document.getElementById(`chip-${w.id}`);
+    chip.classList.remove('correct', 'wrong');
+    const p = placement[w.id];
+    if (p === 'bank') {
+      unplaced++;
+    } else if (String(p) === String(w.zone)) {
+      chip.classList.add('correct');
+      correct++;
+    } else {
+      chip.classList.add('wrong');
+      wrong++;
+    }
+  });
+
+  if (unplaced > 0 && correct === 0 && wrong === 0) {
+    feedback.innerHTML = `<span class="msg-partial">Place all the words to check your answers.</span>`;
+  } else if (wrong === 0 && unplaced === 0) {
+    feedback.innerHTML = `<span class="msg-success">Perfect — all ${correct} words correct! ✓</span>`;
+  } else if (wrong === 0 && unplaced > 0) {
+    feedback.innerHTML = `<span class="msg-partial">${correct} correct so far — ${unplaced} word${unplaced>1?'s':''} still in the bank.</span>`;
+  } else {
+    feedback.innerHTML = `<span class="msg-error">${wrong} mistake${wrong>1?'s':''}.</span> ${correct > 0 ? `<span class="msg-success">${correct} correct.</span>` : ''} Move the highlighted words and try again.`;
+  }
+});
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+document.getElementById('btn-reset').addEventListener('click', () => {
+  WORDS.forEach(w => {
+    const chip = document.getElementById(`chip-${w.id}`);
+    if (chip) {
+      clearFeedbackClasses(chip);
+      chip.classList.remove('placed');
+      chip.style.removeProperty('--zone-ink');
+      bank.appendChild(chip);
+      placement[w.id] = 'bank';
+    }
+  });
+  feedback.textContent = '';
+});
+
+// ── Init: shuffle words into bank ─────────────────────────────────────────────
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+shuffle([...WORDS]).forEach(w => bank.appendChild(buildChip(w)));
+</script>
+</body>
+</html>
