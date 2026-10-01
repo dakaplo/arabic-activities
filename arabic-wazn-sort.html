@@ -226,6 +226,12 @@
     direction: ltr;
   }
 
+  .chip.selected {
+    outline: 3px solid #1D3A6B;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,.28);
+  }
+
   .chip.correct { outline: 3px solid #3A6B1D; }
   .chip.wrong   { outline: 3px solid #A32020; animation: shake .3s ease; }
 
@@ -516,6 +522,54 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   });
   feedback.textContent = '';
 });
+
+// ── Tap-to-select ─────────────────────────────────────────────────────────────
+let selectedChip = null;
+
+function setSelected(chip) {
+  if (selectedChip) selectedChip.classList.remove('selected');
+  if (selectedChip === chip) { selectedChip = null; return; }
+  selectedChip = chip;
+  chip.classList.add('selected');
+}
+
+function clearSelected() {
+  if (selectedChip) selectedChip.classList.remove('selected');
+  selectedChip = null;
+}
+
+document.addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  const zone = e.target.closest('.zone');
+  const bankEl = e.target.closest('#word-bank');
+
+  if (chip) { setSelected(chip); return; }
+
+  if (selectedChip) {
+    if (zone) {
+      dropWordIntoZone(selectedChip.dataset.id, zone.dataset.zone);
+      clearSelected();
+    } else if (bankEl) {
+      returnWordToBank(selectedChip.dataset.id);
+      clearSelected();
+    }
+  }
+});
+
+// patch returnWordToBank / dropWordIntoZone to clear selection state
+const _origDrop = dropWordIntoZone;
+dropWordIntoZone = function(id, zoneNum) {
+  _origDrop(id, zoneNum);
+  const chip = document.getElementById(`chip-${id}`);
+  if (chip) chip.classList.remove('selected');
+};
+
+const _origReturn = returnWordToBank;
+returnWordToBank = function(id) {
+  _origReturn(id);
+  const chip = document.getElementById(`chip-${id}`);
+  if (chip) chip.classList.remove('selected');
+};
 
 // ── Init: shuffle words into bank ─────────────────────────────────────────────
 function shuffle(arr) {

@@ -270,8 +270,14 @@
   }
 
   @media (max-width: 580px) {
-    .columns { grid-template-columns: 1fr; }
-    .card-arabic { font-size: 1.1rem; }
+    .columns { gap: 0.5rem; }
+    .card { padding: 0.45rem 0.6rem; min-height: 36px; margin-bottom: 0.3rem; }
+    .card-arabic { font-size: 1rem; }
+    .card-trans { display: none; }
+    .card-en { font-size: 0.7rem; }
+    .col-label { font-size: 0.68rem; }
+    .score-bar { font-size: 0.78rem; gap: 0.6rem; }
+    header .arabic-title { font-size: 1.4rem; }
   }
 </style>
 </head>
