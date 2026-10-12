@@ -1,0 +1,158 @@
+{
+  "_readme": "UI text. Every entry has an 'en' and an 'ar' version. **bold** and *italic* are the only markup. {n}, {total}, {item} etc. are filled in by the app; leave them as they are.",
+
+  "title": {
+    "en": "Jumlat Ṣifa Practice",
+    "ar": "تَدريب: جُملة الصِفة"
+  },
+
+  "intro": {
+    "heading": {
+      "en": "What's a jumlat ṣifa?",
+      "ar": "ما هِيَ جُملة الصِفة؟"
+    },
+    "lead": {
+      "en": "Sometimes one word isn't enough to describe a noun, so Arabic uses a whole clause. That clause is a **jumlat ṣifa** (adjectival clause).",
+      "ar": "أَحيانا لا تَكفي كَلِمة واحِدة لِوَصف الاِسم، فَنَستَعمِل جُملة كامِلة. هٰذِهِ الجُملة هِيَ **جُملة الصِفة**."
+    },
+    "look_for": {
+      "en": "Three things to look for:",
+      "ar": "اُنظُر إلى ثَلاثة أَشياء:"
+    },
+    "points": {
+      "en": [
+        "The noun is **indefinite** (no *al-*, and not an idāfa with a definite noun).",
+        "The clause comes **right after** the noun and describes it.",
+        "The clause contains a pronoun that points back to the noun. This is the **rābiṭ** (link)."
+      ],
+      "ar": [
+        "الاِسم **نَكِرة** (بِدون «ال»).",
+        "الجُملة تَأتي **بَعدَه مُباشَرةً** وَتَصِفُه.",
+        "في الجُملة ضَمير يَرجِع إلى الاِسم. هٰذا هُوَ **الرابِط**."
+      ]
+    },
+    "example": {
+      "tokens": ["أَعرِف", "طالِبا", "يَسكُن", "في", "القاهِرة"],
+      "clause_start": 2,
+      "clause_end": 4,
+      "mawsuf_index": 1,
+      "rabit_index": 2,
+      "gloss_en": "I know a student who lives in Cairo.",
+      "explanation": {
+        "en": "The clause يَسكُن في القاهِرة describes طالِب. The rābiṭ is the *he* hidden inside يَسكُن.",
+        "ar": "الجُملة «يَسكُن في القاهِرة» تَصِف «طالِب». الرابِط هُوَ الضَمير «هُوَ» داخِل «يَسكُن»."
+      }
+    },
+    "heads_up": {
+      "en": "**Heads up:** if the noun were definite (الطالِب), the same clause would be a different construction. You'll meet that later. For now, every sentence has a jumlat ṣifa. Your job is to find it.",
+      "ar": "**اِنتَبِه:** لَو كانَ الاِسم مَعرِفة (الطالِب) لَكانَ لِلجُملة نَفسِها اسم آخَر. سَتَتَعَلَّم هٰذا لاحِقا. الآن في كُلّ جُملة جُملة صِفة، وَعَلَيكَ أَن تَجِدَها."
+    }
+  },
+
+  "levels": {
+    "1": {
+      "title": {
+        "en": "Level 1: Verbal clauses",
+        "ar": "المُستَوى ١: الجُملة الفِعليّة"
+      },
+      "blurb": {
+        "en": "The clause starts with a verb. The rābiṭ is **hidden**: it's the subject pronoun inside the verb (*he* in يَسكُن, *she* in تَسكُن).",
+        "ar": "الجُملة تَبدَأ بِفِعل. الرابِط **مُستَتِر**: هُوَ الضَمير داخِل الفِعل."
+      }
+    },
+    "2": {
+      "title": {
+        "en": "Level 2: Nominal clauses",
+        "ar": "المُستَوى ٢: الجُملة الاِسميّة"
+      },
+      "blurb": {
+        "en": "The clause starts with a noun. The rābiṭ is **visible**: a pronoun suffix (ـه، ـها) attached to a word in the clause.",
+        "ar": "الجُملة تَبدَأ بِاسم. الرابِط **ظاهِر**: ضَمير مُتَّصِل مِثل ـه وَ ـها."
+      }
+    }
+  },
+
+  "prompts": {
+    "tap_start": {
+      "en": "Tap the **first** word of the jumlat ṣifa.",
+      "ar": "اِضغَط عَلى **أَوَّل** كَلِمة في جُملة الصِفة."
+    },
+    "tap_end": {
+      "en": "Now tap the **last** word.",
+      "ar": "الآن اِضغَط عَلى **آخِر** كَلِمة."
+    },
+    "tap_mawsuf": {
+      "en": "Which noun does the clause describe?",
+      "ar": "أَيُّ اسم تَصِفُه الجُملة؟"
+    },
+    "tap_rabit": {
+      "en": "Tap the word with the pronoun that points back to the noun.",
+      "ar": "اِضغَط عَلى الكَلِمة التي فيها الضَمير الذي يَرجِع إلى الاِسم."
+    },
+    "hidden_pronoun": {
+      "en": "The hidden pronoun:",
+      "ar": "الضَمير المُستَتِر:"
+    }
+  },
+
+  "feedback": {
+    "correct": { "en": "Yes! ✓", "ar": "صَحيح! ✓" },
+    "streak": { "en": "Nice streak!", "ar": "سِلسِلة رائِعة!" },
+    "try_again": { "en": "Not quite. Try again.", "ar": "لَيس تَماما. حاوِل مَرّة ثانية." },
+    "hint_too_short": {
+      "en": "The clause is longer. Keep going until the idea is complete.",
+      "ar": "الجُملة أَطوَل. أَكمِل حَتّى تَتِمّ الفِكرة."
+    },
+    "hint_noun_first": {
+      "en": "The noun is what's being described. The clause comes **after** it.",
+      "ar": "الاِسم هُوَ المَوصوف. الجُملة تَأتي **بَعدَه**."
+    },
+    "hint_earlier_words": {
+      "en": "The main sentence is outside the clause. The clause begins after the noun.",
+      "ar": "الجُملة الأَساسيّة خارِج جُملة الصِفة. اِبدَأ بَعدَ الاِسم."
+    },
+    "hint_end_before_start": {
+      "en": "The last word comes after the first word.",
+      "ar": "آخِر كَلِمة تَأتي بَعدَ أَوَّل كَلِمة."
+    },
+    "hint_wrong_mawsuf": {
+      "en": "Look for the **indefinite** noun, the one without *al-*.",
+      "ar": "اِبحَث عَنِ الاِسم **النَكِرة**، بِدون «ال»."
+    },
+    "hint_wrong_rabit": {
+      "en": "Look for the suffix pronoun (ـه / ـها) that refers back to the noun.",
+      "ar": "اِبحَث عَنِ الضَمير المُتَّصِل (ـه / ـها) الذي يَرجِع إلى الاِسم."
+    }
+  },
+
+  "ui": {
+    "start": { "en": "Start", "ar": "اِبدَأ" },
+    "next": { "en": "Next", "ar": "التالي" },
+    "back_to_levels": { "en": "Back to levels", "ar": "رُجوع إلى المُستَويات" },
+    "show_translation": { "en": "Show translation", "ar": "أَظهِر التَرجَمة" },
+    "item_counter": { "en": "Sentence {n} of {total}", "ar": "الجُملة {n} مِن {total}" },
+    "streak_counter": { "en": "Streak: {n}", "ar": "السِلسِلة: {n}" },
+    "lang_english": { "en": "English", "ar": "English" },
+    "lang_arabic": { "en": "العَرَبيّة", "ar": "العَرَبيّة" },
+    "lang_both": { "en": "Both", "ar": "الاِثنان" },
+    "show_intro": { "en": "What's a jumlat ṣifa?", "ar": "ما هِيَ جُملة الصِفة؟" },
+    "close": { "en": "Close", "ar": "إِغلاق" },
+    "language": { "en": "Language", "ar": "اللُغة" }
+  },
+
+  "complete": {
+    "title": { "en": "Level done!", "ar": "اِنتَهى المُستَوى!" },
+    "score": {
+      "en": "Right on the first try: {n} of {total}",
+      "ar": "إِجابات صَحيحة مِن المَرّة الأولى: {n} مِن {total}"
+    },
+    "perfect": {
+      "en": "Perfect! Every sentence was right on the first try.",
+      "ar": "مُمتاز! كُلّ الإِجابات صَحيحة مِن المَرّة الأولى."
+    },
+    "review_heading": { "en": "Sentences to review", "ar": "جُمَل لِلمُراجَعة" },
+    "review_button": { "en": "Practice these again", "ar": "تَدَرَّب عَلَيها مَرّة ثانية" },
+    "replay_button": { "en": "Play the level again", "ar": "أَعِد المُستَوى" },
+    "next_level_button": { "en": "Go to the next level", "ar": "اِنتَقِل إلى المُستَوى التالي" }
+  }
+}

@@ -1,0 +1,121 @@
+#jumlat-sifa-app {
+  --jsp-ink: #1b1b1f;
+  --jsp-muted: #55555e;
+  --jsp-bg: #fbfaf7;
+  --jsp-card: #ffffff;
+  --jsp-line: #cfcbc2;
+  --jsp-accent: #1f4e8c;
+  --jsp-clause-bg: #fff3b0;
+  --jsp-clause-line: #b8960c;
+  --jsp-mawsuf: #0b5cd5;
+  --jsp-rabit: #b0124f;
+  box-sizing: border-box;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 12px 14px 40px;
+  color: var(--jsp-ink);
+  background: var(--jsp-bg);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+#jumlat-sifa-app *, #jumlat-sifa-app *::before, #jumlat-sifa-app *::after { box-sizing: border-box; }
+
+#jumlat-sifa-app .jsp-ar {
+  font-family: "Amiri", "Noto Naskh Arabic", "Scheherazade New", "Traditional Arabic", "Geeza Pro", serif;
+  font-size: 1.15em;
+  line-height: 2;
+  direction: rtl;
+  text-align: right;
+}
+#jumlat-sifa-app .jsp-line + .jsp-line { margin-top: 2px; }
+
+#jumlat-sifa-app button { font: inherit; color: inherit; cursor: pointer; }
+#jumlat-sifa-app button:focus-visible,
+#jumlat-sifa-app a:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #fff;
+}
+
+.jsp-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding-bottom: 8px; border-bottom: 1px solid var(--jsp-line); }
+.jsp-title { margin: 0; font-size: 1.15rem; line-height: 1.3; }
+.jsp-title .jsp-ar { font-size: 1.25rem; line-height: 1.6; }
+.jsp-langs { display: inline-flex; border: 2px solid var(--jsp-accent); border-radius: 8px; overflow: hidden; }
+.jsp-langs button { min-height: 44px; min-width: 44px; padding: 4px 12px; border: 0; background: #fff; color: var(--jsp-accent); }
+.jsp-langs button + button { border-inline-start: 2px solid var(--jsp-accent); }
+.jsp-langs button[aria-pressed="true"] { background: var(--jsp-accent); color: #fff; font-weight: 700; }
+.jsp-langs .jsp-ar-label { font-family: "Amiri", "Noto Naskh Arabic", "Geeza Pro", serif; font-size: 1.1rem; }
+.jsp-linkbar { margin: 6px 0 0; }
+.jsp-link { min-height: 44px; padding: 0; border: 0; background: none; color: var(--jsp-accent); text-decoration: underline; }
+
+.jsp-h2 { font-size: 1.35rem; margin: 18px 0 8px; line-height: 1.3; }
+.jsp-card { background: var(--jsp-card); border: 1px solid var(--jsp-line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+.jsp-card ul { margin: 6px 0; padding-inline-start: 22px; }
+.jsp-card ul.jsp-ar { padding-inline-start: 0; padding-inline-end: 22px; }
+.jsp-levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 12px 0; }
+.jsp-levelcard { text-align: start; display: block; width: 100%; background: var(--jsp-card); border: 2px solid var(--jsp-accent); border-radius: 12px; padding: 14px 16px; min-height: 44px; }
+.jsp-levelcard:hover:not(:disabled) { background: #eef4fc; }
+.jsp-levelcard:disabled { opacity: .55; cursor: not-allowed; border-style: dashed; }
+.jsp-levelcard strong.jsp-lt { display: block; font-size: 1.1rem; }
+
+.jsp-btn { min-height: 44px; padding: 8px 18px; border-radius: 8px; border: 2px solid var(--jsp-accent); background: #fff; color: var(--jsp-accent); font-weight: 600; }
+.jsp-btn.jsp-primary { background: var(--jsp-accent); color: #fff; }
+.jsp-btn:hover { filter: brightness(.95); }
+.jsp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+.jsp-btn .jsp-line { display: block; }
+
+.jsp-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-top: 10px; color: var(--jsp-muted); }
+.jsp-bar { height: 6px; background: #e4e1d8; border-radius: 3px; overflow: hidden; margin: 6px 0 4px; }
+.jsp-bar > span { display: block; height: 100%; background: var(--jsp-accent); transition: width .25s; }
+.jsp-streak { font-weight: 700; color: #7a4b00; }
+
+.jsp-sentence {
+  display: flex; flex-wrap: wrap; gap: 26px 8px; padding: 30px 6px 10px;
+  direction: rtl; justify-content: flex-start; align-items: flex-end;
+}
+.jsp-slot { position: relative; display: inline-block; }
+.jsp-tile {
+  min-height: 44px; min-width: 44px; padding: 2px 10px;
+  font-family: "Amiri", "Noto Naskh Arabic", "Scheherazade New", "Traditional Arabic", "Geeza Pro", serif;
+  font-size: 2rem; line-height: 2.2; color: #111;
+  background: #fff; border: 2px solid var(--jsp-line); border-radius: 10px;
+}
+.jsp-tile:hover:not(:disabled) { border-color: #777; }
+.jsp-tile:disabled { cursor: default; color: #111; opacity: 1; }
+.jsp-tile.jsp-start { border-inline-start: 6px solid var(--jsp-clause-line); }
+.jsp-tile.jsp-clause { background: var(--jsp-clause-bg); border-color: var(--jsp-clause-line); border-radius: 14px; }
+.jsp-tile.jsp-mawsuf { text-decoration: underline; text-decoration-thickness: 5px; text-underline-offset: 8px; text-decoration-color: var(--jsp-mawsuf); border-color: var(--jsp-mawsuf); background: #e6f0ff; }
+.jsp-tile.jsp-rabit, .jsp-rabit { color: var(--jsp-rabit); font-weight: 700; }
+.jsp-tile.jsp-rabit { border-color: var(--jsp-rabit); border-style: dashed; }
+.jsp-rabit.jsp-suffix { background: rgba(176, 18, 79, .12); border-radius: 4px; }
+.jsp-pron {
+  position: absolute; left: 50%; top: -30px; transform: translateX(-50%);
+  white-space: nowrap; font-family: "Amiri", "Noto Naskh Arabic", "Geeza Pro", serif;
+  font-size: 1.15rem; line-height: 1.5; font-weight: 700; color: var(--jsp-rabit);
+  border: 1.5px solid var(--jsp-rabit); border-radius: 999px; padding: 0 10px; background: #fff;
+}
+.jsp-tile.jsp-shake { animation: jsp-shake .35s; }
+@keyframes jsp-shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-7px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+
+.jsp-live { min-height: 3.5em; padding: 10px 14px; margin-top: 10px; background: var(--jsp-card); border: 1px solid var(--jsp-line); border-radius: 10px; }
+.jsp-live .jsp-prompt { font-weight: 600; }
+.jsp-live .jsp-bad { color: #8a1c1c; font-weight: 600; }
+.jsp-live .jsp-hint { color: var(--jsp-muted); }
+.jsp-live .jsp-good { color: #17612a; font-weight: 700; }
+.jsp-live .jsp-gloss { font-style: italic; margin-top: 8px; }
+.jsp-live .jsp-expl { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--jsp-line); }
+.jsp-live .jsp-caption { color: var(--jsp-rabit); font-weight: 600; }
+.jsp-live .jsp-streakmsg { color: #7a4b00; font-weight: 700; }
+
+.jsp-review { list-style: none; padding: 0; margin: 8px 0; }
+.jsp-review li { padding: 8px 0; border-bottom: 1px solid var(--jsp-line); }
+.jsp-review .jsp-ar { font-size: 1.5rem; }
+.jsp-score { font-size: 1.2rem; font-weight: 700; }
+
+@media (max-width: 480px) {
+  .jsp-sentence { gap: 28px 6px; }
+  .jsp-tile { font-size: 1.6rem; padding: 2px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jsp-tile.jsp-shake { animation: none; }
+  .jsp-bar > span { transition: none; }
+}
