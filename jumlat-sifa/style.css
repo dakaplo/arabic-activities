@@ -26,9 +26,10 @@
   direction: rtl;
   text-align: right;
 }
+#jumlat-sifa-app .jsp-line { display: block; }
 #jumlat-sifa-app .jsp-line + .jsp-line { margin-top: 2px; }
 
-#jumlat-sifa-app button { font: inherit; color: inherit; cursor: pointer; }
+:where(#jumlat-sifa-app) button { font: inherit; color: inherit; cursor: pointer; }
 #jumlat-sifa-app button:focus-visible,
 #jumlat-sifa-app a:focus-visible {
   outline: 3px solid #111;
@@ -69,17 +70,17 @@
 .jsp-streak { font-weight: 700; color: #7a4b00; }
 
 .jsp-sentence {
-  display: flex; flex-wrap: wrap; gap: 26px 8px; padding: 30px 6px 10px;
+  display: flex; flex-wrap: wrap; gap: 26px 0; padding: 30px 6px 10px;
   direction: rtl; justify-content: flex-start; align-items: flex-end;
 }
 .jsp-slot { position: relative; display: inline-block; }
 .jsp-tile {
-  min-height: 44px; min-width: 44px; padding: 2px 10px;
+  min-height: 44px; min-width: 44px; padding: 2px 5px; margin: 0 1px;
   font-family: "Amiri", "Noto Naskh Arabic", "Scheherazade New", "Traditional Arabic", "Geeza Pro", serif;
-  font-size: 2rem; line-height: 2.2; color: #111;
-  background: #fff; border: 2px solid var(--jsp-line); border-radius: 10px;
+  font-size: 2.7rem; line-height: 2.2; color: #111;
+  background: transparent; border: 2px solid transparent; border-radius: 10px;
 }
-.jsp-tile:hover:not(:disabled) { border-color: #777; }
+.jsp-tile:hover:not(:disabled) { border-color: #999; background: #fff; }
 .jsp-tile:disabled { cursor: default; color: #111; opacity: 1; }
 .jsp-tile.jsp-start { border-inline-start: 6px solid var(--jsp-clause-line); }
 .jsp-tile.jsp-clause { background: var(--jsp-clause-bg); border-color: var(--jsp-clause-line); border-radius: 14px; }
@@ -112,8 +113,8 @@
 .jsp-score { font-size: 1.2rem; font-weight: 700; }
 
 @media (max-width: 480px) {
-  .jsp-sentence { gap: 28px 6px; }
-  .jsp-tile { font-size: 1.6rem; padding: 2px 8px; }
+  .jsp-sentence { gap: 28px 0; }
+  .jsp-tile { font-size: 2rem; padding: 2px 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .jsp-tile.jsp-shake { animation: none; }
