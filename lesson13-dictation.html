@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 13 Vocabulary Dictation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#F7F6F2; --surface:#FFF; --ink:#1A1A18; --muted:#6B6B5E; --rule:#D9D8D0;
+    --accent:#1D3A6B; --tint:#E4EAF6;
+    --ok:#2E6B1D; --ok-tint:#E4F0DC; --bad:#9B2226; --bad-tint:#F8E3E3;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; padding:32px 20px 60px; }
+  .wrap { max-width:820px; margin:0 auto; }
+  header { text-align:center; margin-bottom:24px; }
+  .title-ar { font-family:'Noto Naskh Arabic',serif; font-size:clamp(1.6rem,4vw,2.2rem); font-weight:700; line-height:1.5; direction:rtl; }
+  .subtitle { margin-top:6px; font-size:0.9rem; color:var(--muted); line-height:1.5; }
+  .back { display:inline-block; margin-bottom:14px; font-size:0.8rem; color:var(--muted); text-decoration:none; }
+  .back:hover { color:var(--ink); }
+  .score-bar { position:sticky; top:0; z-index:5; background:var(--bg); padding:10px 0; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-size:0.85rem; color:var(--muted); border-bottom:1px solid var(--rule); margin-bottom:16px; }
+  .score-bar strong { color:var(--ink); }
+  .pill { font:inherit; font-size:0.8rem; border:1.5px solid var(--rule); background:transparent; border-radius:20px; padding:5px 13px; cursor:pointer; color:var(--ink); }
+  .pill:hover, .pill[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .bar-right { display:flex; gap:8px; }
+  .item { background:var(--surface); border:1px solid var(--rule); border-radius:10px; padding:16px 20px 18px; margin-bottom:16px; }
+  .item.done { border-color:var(--ok); }
+  .item-top { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .num { font-size:0.8rem; color:var(--muted); font-weight:600; min-width:1.6em; }
+  .play { font:inherit; font-size:0.85rem; display:inline-flex; align-items:center; gap:7px; border:1.5px solid var(--accent); background:var(--tint); color:var(--accent); border-radius:20px; padding:6px 16px; cursor:pointer; font-weight:500; }
+  .play:hover, .play.playing { background:var(--accent); color:#fff; }
+  .head { margin-left:auto; direction:rtl; font-family:'Noto Naskh Arabic',serif; font-size:1.3rem; font-weight:700; color:var(--accent); background:var(--tint); border-radius:6px; padding:0 12px; line-height:1.8; }
+  .play svg { width:12px; height:12px; fill:currentColor; }
+  .sentence { direction:rtl; font-family:'Noto Naskh Arabic',serif; font-size:1.5rem; line-height:2.6; text-align:right; }
+  .blank { font:inherit; display:inline-block; min-width:4.2em; text-align:center; border:0; border-bottom:2.5px solid var(--muted); background:var(--tint); color:inherit; border-radius:6px 6px 0 0; padding:0 8px; margin:0 2px; cursor:pointer; line-height:1.9; }
+  .blank:hover { background:#d3dcf0; }
+  .blank.active { border-bottom-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+  .blank.filled { background:var(--ok-tint); color:var(--ok); border-bottom-color:var(--ok); font-weight:700; cursor:default; }
+  .choices { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:10px; padding-top:12px; border-top:1px solid var(--rule); direction:rtl; }
+  .choice { font-family:'Noto Naskh Arabic',serif; font-size:1.3rem; line-height:1.6; border:1.5px solid var(--rule); background:var(--surface); border-radius:8px; padding:4px 18px; cursor:pointer; color:var(--ink); min-width:5em; }
+  .choice:hover:not(:disabled) { border-color:var(--accent); background:var(--tint); }
+  .choice.wrong { background:var(--bad-tint); border-color:var(--bad); color:var(--bad); text-decoration:line-through; cursor:default; animation:shake .25s; }
+  .choice.right { background:var(--ok-tint); border-color:var(--ok); color:var(--ok); font-weight:700; }
+  .hint { text-align:center; font-size:0.78rem; color:var(--muted); margin-top:8px; min-height:1.2em; }
+  .hint.bad { color:var(--bad); }
+  .hint.ok { color:var(--ok); font-weight:500; }
+  @keyframes shake { 25% { transform:translateX(-4px); } 75% { transform:translateX(4px); } }
+  .final { display:none; text-align:center; background:var(--ok-tint); border:1px solid var(--ok); border-radius:10px; padding:18px; color:var(--ok); font-weight:500; }
+  .final.show { display:block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; All activities</a>
+  <header>
+    <h1 class="title-ar">إملاء: مُفرَدات الدرس ١٣</h1>
+    <p class="subtitle">Listen to each sentence, then choose the correct word for every blank. You can replay as often as you like.</p>
+  </header>
+
+  <div class="score-bar">
+    <span>Correct on first try: <strong id="first">0</strong> / <strong id="total">0</strong></span>
+    <span class="bar-right">
+      <button class="pill" id="slow" aria-pressed="false">Slow (0.75×)</button>
+      <button class="pill" id="reset">Reset</button>
+    </span>
+  </div>
+
+  <div id="items"></div>
+  <div class="final" id="final"></div>
+  <audio id="audio" preload="auto" src="lesson13-dictation.mp3"></audio>
+</div>
+
+<script>
+const DATA = [
+  { h:"أخيراً", t:[4.0,11.2], s:"جلسنا في ___ ساعات ___ ، ___ جاء طائرتنا.",
+    b:[["المطار","المطعم","المكتب","الفندق"],["طويلة","طويل","طويلات","قصيرة"],["وأخيراً","وأولاً","ولكن","وبعدها"]] },
+  { h:"أمامَ", t:[14.6,24.3], s:"هل ___ اسم البنت الطويلة التي ___ دائماً تجلس ___ في الصفّ؟",
+    b:[["تتذكّرين","تذكرين","تتذكّر","يتذكرن"],["كانت","كان","كنتِ","تكون"],["أمامكِ","خلفكِ","أمامنا","أمامه"]] },
+  { h:"مجلّة", t:[29.2,36.8], s:"يمكنكم أن تقرأوا جرائد ___ عربية ___ على الإنترنت.",
+    b:[["ومجلّات","ومجلّة","وكتب","ومقالة"],["كثيرة","كثير","كثيرون","قليلة"]] },
+  { h:"حَضَرَ إلى", t:[45.2,52.3], s:"قرّرت أنْ لا ___ إلى المكتب اليومَ ___ مشكلتي مع ___.",
+    b:[["أحضر","حضرت","يحضر","تحضر"],["بسبب","مثل","بعد","عند"],["المدير","المديرة","المكتب","الموظف"]] },
+  { h:"رَجَعَ", t:[61.9,72.5], s:"ليلة السبت ___ إلى البيت مُتأخِّرين ___ صَحَوْتُ يوم الأحد بعد ___",
+    b:[["رجعنا","رجعتُ","يرجعون","رجعوا"],["ولذلك","ولكن","وبعدها","لأنّ"],["الظهر","العصر","المساء","الصباح"]] },
+  { h:"رَغِبَ في", t:[81.5,89.5], s:"لماذا لا ___ في ___ معنا؟ أَلَيسَ عندك ___ في ___ هذا الفيلم؟",
+    b:[["ترغب","تريد","يرغب","ترغبين"],["الخروج","الدخول","الرجوع","الذهاب"],["رغبة","رغب","رغبات","فرصة"],["مشاهدة","شاهدت","مشاهدين","مشاهد"]] },
+  { h:"ما زِلتُ", t:[93.6,102.5], s:"___ أنام متأخّراً وأصحو ___ كما كنت أفعل في ___ الجامعة.",
+    b:[["ما زلتُ","ما زالت","لم أزل","ما زلنا"],["متأخّراً","مبكّراً","متأخّرين","متأخّرة"],["أيام","سنوات","ساعات","أوقات"]] },
+  { h:"شَجَّعَ على", t:[111.7,121.6], s:"كانت الموسيقى هوايتي ___ منذ ___ ، وكانت والدتي ___ عليها دائماً.",
+    b:[["المفضّلة","المفضّل","المفضّلات","الأفضل"],["طفولتي","طفلتي","طفولته","شبابي"],["تشجّعني","تشجّعك","شجّعتني","يشجّعني"]] },
+  { h:"ظَنَّ أنّ", t:[130.5,141.0], s:"هل ___ ___ العلاقات بين ___ العربية والولايات ___ الأمريكية ___ أحسن في المستقبل؟",
+    b:[["تَظُنّ","تظنّون","ظننتُ","تظنّين"],["أنّ","إنّ","لأنّ","أنا"],["البلاد","البلد","الدول","العالم"],["المتّحدة","المتّحدين","المتقدّمة","المتحدّثة"],["ستصبح","أصبحت","سيصبح","تصبحين"]] },
+  { h:"يعني", t:[144.6,151.4], s:"إذا قرّرت ___ إلى بلدك، فهذا ___ انقطاع ___.",
+    b:[["العودة","الرجوع","السفر","عودتك"],["يعني","يعمل","معنى","تعني"],["علاقتنا","علاقاتنا","علاقتك","العلاقة"]] },
+  { h:"الغُربة", t:[154.2,167.0], s:"عندما ___ إلى أمريكا كانت تشعُر ___ والوِحدة ___ طويل، ولكن، ___ أنّها أصبحت سعيدة ___.",
+    b:[["جاءت","جاء","ذهبت","جئتُ"],["بالغُربة","بالفرحة","بالغرباء","بالتعب"],["لوقت","وقت","لأوقات","بوقت"],["أظنّ","أعتقد","ظنّت","أعرف"],["الآن","أمس","غداً","اليوم"]] },
+  { h:"فُرصة", t:[171.6,179.7], s:"ماذا يُريد الشَّباب؟ ___ أنّهم يريدون ___ عمل أكثر وأحسن.",
+    b:[["أظنّ","ظننتُ","تظنّ","أعتقد"],["فُرَص","فرصة","وظائف","مجالات"]] },
+  { h:"فَشِلَ في", t:[186.6,195.2], s:"إذا ___ في الحُصول على هذه ___ ، فَسَتَكون لي ___ أخرى إن شاء الله.",
+    b:[["فَشِلْتُ","نجحتُ","يفشل","فشلنا"],["المِنحة","المحنة","المنحى","المنظّمة"],["فُرَص","فرصة","فرضاً","وظائف"]] },
+  { h:"فَصَلَ", t:[201.1,207.6], s:"___ الشركة هذا ___ بسبب تأخُّره ___.",
+    b:[["فَصَلَت","فَصَلَ","فصلتُ","وصلت"],["المُوظَّف","الموظّفة","الطالب","الموظّفين"],["الدائم","الدائمة","الدائمين","القائم"]] },
+  { h:"اسْتَقَرَّ", t:[214.9,227.0], s:"قرّر أنْ ___ ، ليس لأنّه يحبّها، ولكن ___ يظنّ أنّ الزواج يعني ___.",
+    b:[["يتزوّجَها","تزوّجها","يزورها","يتزوّجه"],["لأنّه","لأنّها","لكنّه","وإنّه"],["الاستقرار","الاستقبال","الاستمرار","الاستغراب"]] },
+  { h:"مَقالة", t:[231.7,244.2], s:"في ___ اليوم عدّة ___ عن زيارة ___ المغرب إلى واشنطن واستقبال ___ الأمريكي له.",
+    b:[["جرائد","جريدة","جرائم","مجلّات"],["مقالات","مقالة","مقابلات","مقولات"],["مَلِك","مالك","مدير","ملكة"],["الرئيس","الرؤساء","المدير","الرئيسي"]] },
+  { h:"كذلك", t:[245.9,260.5], s:"___ تونس ___ بمُدُنها الجميلة، ___ زُرنا مالطا وسَمِعنا فيها لغة ___ إلى اللغة ___.",
+    b:[["زُرنا","زارت","زرتم","سرنا"],["واستَمتَعْنا","واستمتعتُ","استمتعنا","وسمعنا"],["وكذلك","ولذلك","وكان","ولكن"],["قريبة","قريب","بعيدة","قديمة"],["العربية","الإنجليزية","الفرنسية","عربية"]] },
+  { h:"مُناسِب", t:[264.6,272.0], s:"ليس هذا الموعد ___ لي، فهل يمكن أن آخُذَ ___ آخَر؟",
+    b:[["مُناسِباً","مناسب","مناسبة","مناسبين"],["موعداً","مواعيد","موعد","وقتاً"]] },
+  { h:"انْتَهَى من", t:[281.0,291.9], s:"بعد ___ من رِسالة الماجستير، سنأخُذ ___ في هواي، حيثُ ___ عِدّة أيّام.",
+    b:[["الاِنتِهاء","انتهى","الانتظار","النهاية"],["إجازة","إجازات","رسالة","وظيفة"],["سَنَقضي","قضينا","سنقرأ","نقضي"]] },
+  { h:"وَجَدَ", t:[297.0,306.0], s:"نزلتُ من البيت، ولكن ما ___ أيّ سيارة تاكسي ___ إلى المطعم.",
+    b:[["وَجَدْتُ","وَجَدَ","وجدنا","أجد"],["تأخذني","تأخذ","تأخذه","تأخذنا"]] },
+  { h:"لَمْ أَجِد", t:[309.8,317.6], s:"ما تزوّجت إلى ___ لأنّي ___ ___ المرأة التي ___.",
+    b:[["الآن","اليوم","الأمس","الآخر"],["لم","لا","ما","لن"],["أَجِد","وجد","تجد","وجدتُ"],["تفهمني","تفهم","تفهمه","تفهمين"]] },
+  { h:"وَظيفة", t:[322.1,333.6], s:"في السنوات ___ ، أصبحت هُناك ___ وفُرَص عمل أكثر لِمَن ___ اللغة العربية في أمريكا.",
+    b:[["الأخيرة","الأخيرين","الأولى","الماضية"],["وَظائِف","وظيفة","وظيفتان","أعمال"],["يتكلم","تتكلم","يتعلّم","يكلّم"]] },
+];
+
+const strip = s => s.replace(/[ً-ِْ]/g, '');
+const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.random()*(i+1)|0; [a[i],a[j]] = [a[j],a[i]]; } return a; };
+const $ = id => document.getElementById(id);
+const audio = $('audio');
+const itemsEl = $('items');
+const totalBlanks = DATA.reduce((n,d) => n + d.b.length, 0);
+let firstTry, doneBlanks, stopAt = null, playingBtn = null, timer = null;
+
+function stopPlayback() {
+  audio.pause(); clearInterval(timer); stopAt = null;
+  if (playingBtn) { playingBtn.classList.remove('playing'); playingBtn = null; }
+}
+
+function playSegment(btn, t) {
+  const same = playingBtn === btn;
+  stopPlayback();
+  if (same) return;
+  audio.currentTime = t[0]; stopAt = t[1]; playingBtn = btn;
+  btn.classList.add('playing');
+  audio.playbackRate = $('slow').getAttribute('aria-pressed') === 'true' ? 0.75 : 1;
+  audio.play();
+  timer = setInterval(() => { if (audio.currentTime >= stopAt) stopPlayback(); }, 40);
+}
+
+function build() {
+  stopPlayback();
+  itemsEl.innerHTML = '';
+  $('final').classList.remove('show');
+  firstTry = 0; doneBlanks = 0;
+  $('total').textContent = totalBlanks;
+  DATA.forEach((d, i) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `<div class="item-top"><span class="num">${i+1}</span><button class="play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg>Listen</button><span class="head">${d.h}</span></div><div class="sentence"></div><div class="choices"></div><div class="hint"></div>`;
+    const play = el.querySelector('.play');
+    play.onclick = () => playSegment(play, d.t);
+    const sent = el.querySelector('.sentence'), choicesEl = el.querySelector('.choices'), hint = el.querySelector('.hint');
+    const parts = d.s.split('___');
+    const blanks = [];
+    const state = { active:0, filled:0 };
+    const wrongOnce = d.b.map(() => false);
+
+    parts.forEach((p, k) => {
+      sent.append(strip(p));
+      if (k < d.b.length) {
+        const bt = document.createElement('button');
+        bt.className = 'blank'; bt.innerHTML = '&nbsp;';
+        bt.onclick = () => { if (!bt.classList.contains('filled')) activate(k); };
+        blanks.push(bt); sent.append(bt);
+      }
+    });
+
+    function activate(k) {
+      state.active = k;
+      blanks.forEach((b, j) => b.classList.toggle('active', j === k));
+      hint.textContent = ''; hint.className = 'hint';
+      choicesEl.innerHTML = '';
+      const correct = strip(d.b[k][0]);
+      shuffle(d.b[k]).forEach(w => {
+        const c = document.createElement('button');
+        c.className = 'choice'; c.textContent = strip(w);
+        c.onclick = () => {
+          if (strip(w) === correct) {
+            if (!wrongOnce[k]) { firstTry++; $('first').textContent = firstTry; }
+            doneBlanks++;
+            blanks[k].textContent = correct;
+            blanks[k].classList.remove('active'); blanks[k].classList.add('filled');
+            state.filled++;
+            const next = blanks.findIndex(b => !b.classList.contains('filled'));
+            if (next === -1) {
+              choicesEl.innerHTML = '';
+              el.classList.add('done');
+              hint.className = 'hint ok'; hint.textContent = 'Correct!';
+              if (doneBlanks === totalBlanks) {
+                $('final').textContent = `Finished! You got ${firstTry} of ${totalBlanks} blanks right on the first try.`;
+                $('final').classList.add('show');
+              }
+            } else activate(next);
+          } else {
+            wrongOnce[k] = true;
+            c.classList.add('wrong'); c.disabled = true;
+            hint.className = 'hint bad'; hint.textContent = 'Not quite — try again.';
+          }
+        };
+        choicesEl.append(c);
+      });
+    }
+    itemsEl.append(el);
+    activate(0);
+  });
+  $('first').textContent = 0;
+}
+
+$('slow').onclick = e => {
+  const on = e.target.getAttribute('aria-pressed') !== 'true';
+  e.target.setAttribute('aria-pressed', on);
+  audio.playbackRate = on ? 0.75 : 1;
+};
+$('reset').onclick = () => { build(); window.scrollTo({ top:0, behavior:'smooth' }); };
+build();
+</script>
+</body>
+</html>
