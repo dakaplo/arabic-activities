@@ -120,7 +120,7 @@ const DATA = [
     b:[["الأخيرة","الأخيرين","الأولى","الماضية"],["وَظائِف","وظيفة","وظيفتان","أعمال"],["يتكلم","تتكلم","يتعلّم","يكلّم"]] },
 ];
 
-const strip = s => s.replace(/[ً-ِْ]/g, '');
+const strip = s => s.replace(/[ٌ-ِْ]/g, '');
 const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.random()*(i+1)|0; [a[i],a[j]] = [a[j],a[i]]; } return a; };
 const $ = id => document.getElementById(id);
 const audio = $('audio');
