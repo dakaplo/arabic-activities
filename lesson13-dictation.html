@@ -69,12 +69,12 @@
 
   <div id="items"></div>
   <div class="final" id="final"></div>
-  <audio id="audio" preload="auto" src="lesson13-dictation.mp3"></audio>
+  <audio id="audio" preload="auto"></audio>
 </div>
 
 <script>
 const DATA = [
-  { h:"أخيراً", t:[4.0,11.2], s:"جلسنا في ___ ساعات ___ ، ___ جاء طائرتنا.",
+  { h:"أخيراً", t:[4.0,11.2], s:"جلسنا في ___ ساعات ___ ، ___ جاءت طائرتنا.",
     b:[["المطار","المطعم","المكتب","الفندق"],["طويلة","طويل","طويلات","قصيرة"],["وأخيراً","وأولاً","ولكن","وبعدها"]] },
   { h:"أمامَ", t:[14.6,24.3], s:"هل ___ اسم البنت الطويلة التي ___ دائماً تجلس ___ في الصفّ؟",
     b:[["تتذكّرين","تذكرين","تتذكّر","يتذكرن"],["كانت","كان","كنتِ","تكون"],["أمامكِ","خلفكِ","أمامنا","أمامه"]] },
@@ -124,6 +124,9 @@ const strip = s => s.replace(/[ً-ِْ]/g, '');
 const shuffle = a => { a = a.slice(); for (let i = a.length-1; i > 0; i--) { const j = Math.random()*(i+1)|0; [a[i],a[j]] = [a[j],a[i]]; } return a; };
 const $ = id => document.getElementById(id);
 const audio = $('audio');
+fetch('lesson13-dictation.mp3').then(r => { if (!r.ok) throw 0; return r.blob(); })
+  .then(b => { audio.src = URL.createObjectURL(b); })
+  .catch(() => { audio.src = 'lesson13-dictation.mp3'; });
 const itemsEl = $('items');
 const totalBlanks = DATA.reduce((n,d) => n + d.b.length, 0);
 let firstTry, doneBlanks, stopAt = null, playingBtn = null, timer = null;
@@ -137,10 +140,15 @@ function playSegment(btn, t) {
   const same = playingBtn === btn;
   stopPlayback();
   if (same) return;
-  audio.currentTime = t[0]; stopAt = t[1]; playingBtn = btn;
+  stopAt = t[1]; playingBtn = btn;
   btn.classList.add('playing');
-  audio.playbackRate = $('slow').getAttribute('aria-pressed') === 'true' ? 0.75 : 1;
-  audio.play();
+  const go = () => {
+    if (playingBtn !== btn) return;
+    audio.currentTime = t[0];
+    audio.playbackRate = $('slow').getAttribute('aria-pressed') === 'true' ? 0.75 : 1;
+    audio.play();
+  };
+  if (audio.readyState >= 1) go(); else audio.addEventListener('loadedmetadata', go, { once:true });
   timer = setInterval(() => { if (audio.currentTime >= stopAt) stopPlayback(); }, 40);
 }
 
